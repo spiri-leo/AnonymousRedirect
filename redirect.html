@@ -1,0 +1,92 @@
+
+<html lang="en">
+<head>
+    <title>Redirect by Lev</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<h1>Redirect</h1>
+<p>This page helps open pages without trackers.</p>
+       <p class="text">
+            You are about to go to the following page:
+            <code id="currentUrl">https://example.org/</code>
+        </p>
+        <div class="wrap">
+            <button type="button" class="button" id="redirectButton">
+                Open now
+            </button>
+        </div>
+
+
+    <script type="text/javascript">
+        if (!String.prototype.endsWith) {
+            Object.defineProperty(String.prototype, 'endsWith', {
+                value: function (searchString, position) {
+                    var subjectString = this.toString();
+                    if (position === undefined || position > subjectString.length) {
+                        position = subjectString.length;
+                    }
+                    position -= searchString.length;
+                    var lastIndex = subjectString.indexOf(searchString, position);
+                    return lastIndex !== -1 && lastIndex === position;
+                },
+            });
+        }
+
+        function getParameterByName(name, url) {
+            if (!url) {
+                url = window.location.href;
+            }
+            name = name.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+
+        function getHostname(url) {
+            if (!url) {
+                return '';
+            }
+
+            var hostname = '';
+
+            if (url.indexOf('//') > -1) {
+                hostname = url.split('/')[2];
+            } else {
+                hostname = url.split('/')[0];
+            }
+
+            hostname = hostname.split(':')[0];
+            hostname = hostname.split('?')[0];
+
+            return hostname;
+        }
+
+        var url = getParameterByName('url');
+        var host = getHostname(document.referrer);
+
+        if (host === 'example.com' || host.endsWith('.example.com')) {
+            performRedirect();
+        }
+
+        var currentUrl = document.getElementById('currentUrl');
+
+        if (currentUrl) {
+            currentUrl.innerText = url;
+        }
+
+        function performRedirect() {
+            // Opening error pages
+            window.location.href = url || 'https://spiri-leo.github.io/Redirect/error.html';
+        }
+
+        var redirectButton = document.getElementById('redirectButton');
+
+        if (redirectButton) {
+            redirectButton.addEventListener('click', performRedirect);
+        }
+    </script>
+
+    <body>
+</html>
